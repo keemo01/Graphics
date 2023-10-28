@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+
+    <style type="text/css">
+        canvas {
+            border: 1px solid grey;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas-for-ball"></canvas>
+
+    <script type="text/javascript">
+        // Gets a handle to the element with id canvasOne.
+        var canvas = document.getElementById("canvas-for-ball");
+
+        // Get a 2D context for the canvas.
+        var ctx = canvas.getContext("2d");
+        document.body.appendChild(canvas);
+
+        //Variables
+        var x, y, r, ySpeed, xSpeed, turn, direction;
+        var noClicks = 0;
+
+        //Class
+        class DrawBall {
+            constructor(x, y, r, yS, xS, spinSpeed, bounceLoss) {
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                this.ySpeed = yS;
+                this.xSpeed = xS;
+                this.spinSpeed = spinSpeed;
+                this.bounceLoss = bounceLoss;
+            }
+
+            draw() {
+                // Draw the ball (stroked, not filled).
+                //Red Half
+                ctx.fillStyle = "rgb(50,50,0)";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+            }
+
+            move() {
+                if (this.y > canvas.height - this.r || this.y < this.r) {
+                    //Change Direction
+                    this.ySpeed *= -1;
+                    // Kinetic energy loss on bounce
+                    this.ySpeed *= this.bounceLoss;
+                }
+                if (this.x > canvas.width - this.r || this.x < this.r) {
+                    //Change Direction
+                    this.xSpeed *= -1;
+                }
+
+                // Apply downwards acceleration
+                this.ySpeed += 0.1;
+
+                // Update the x,y location.
+                this.y += this.ySpeed;
+                this.x += this.xSpeed;
+            }
+
+            spin(speedChange) {
+                this.spinSpeed += speedChange;
+            }
+        } //Close Class
+
+        //Instance of Ball
+        ball = new DrawBall(30, 20, 15, 2, 2, (Math.PI / 4), true);
+
+        // A function to repeat every time the animation loops.
+        function repeatme() {
+            //Clear Canvas each time
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            //Use Class Functions to Draw and Move Ball
+            ball.draw();
+            ball.move();
+
+            window.requestAnimationFrame(repeatme);
+        } //End Repeat me
+
+        // Get the animation going.
+        repeatme();
+
+        // Add a Javascript event listener to the keypress event.
+        window.addEventListener("keypress", function (event) {
+            // Just log the event to the console.
+            console.log(event);
+
+            // Check for key combinations to control spin speed
+            if (event.key === "o") {
+                ball.spin(0.1); // Increase spin speed
+            } else if (event.key === "p") {
+                ball.spin(-0.1); // Decrease spin speed
+            }
+        });
+
+        // Keydown event with jQuery
+        $(document.body).on("keydown", function (e) {
+            console.log(e.which);
+
+            switch (e.which) {
+                // Left arrow
+                case 37:
+                    if (ball.xSpeed > 0) {
+                        ball.xSpeed *= -1;
+                    }
+                    break;
+
+                // Up Arrow
+                case 38:
+                    if (ball.ySpeed > 0) {
+                        ball.ySpeed *= -1;
+                    }
+                    break;
+
+                // Right arrow
+                case 39:
+                    if (ball.xSpeed < 0) {
+                        ball.xSpeed *= -1;
+                    }
+                    break;
+
+                // Down arrow
+                case 40:
+                    if (ball.ySpeed < 0) {
+                        ball.ySpeed *= -1;
+                    }
+                    break;
+            }
+        });
+    </script>
+</body>
+
+</html>

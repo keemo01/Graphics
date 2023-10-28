@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mouse Click</title>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p>My paragraph</p>
+    <canvas id="myCanvas"></canvas>
+
+    <script type="text/javascript">
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        canvas.addEventListener("click", function (event) {
+            var x = event.clientX - canvas.offsetLeft;
+            var y = event.clientY - canvas.offsetTop;
+
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, 2 * Math.PI);
+            ctx.fill();
+        });
+    </script>
+</body>
+
+</html>
