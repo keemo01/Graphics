@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script type="text/javascript">
+
+        // author Akeem
+
+        // variables
+        var ballSpeedZ;
+        var xVel = 0.2;
+        var zVel = 0.2;
+        var yVel = 0.2;
+        var newColour = 0;
+        var gravity = 0.01;
+
+        // create scene without any parameters
+        var scene = new THREE.Scene();
+        // create camera - field of view, width of element / height, near  clipping plane, far clipping plane
+        var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // sphere, cube and cameras default coordinates are (0,0,0)
+        // set x, y, z
+        camera.position.set(0, -40, 15);
+        //camera.target = scene;
+        camera.lookAt(0, 0, 0);
+
+        // create renderer instance
+        var renderer = new THREE.WebGLRenderer();
+        // set the size of the area we want to render
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        // add renderer element to the HTML document
+        document.body.appendChild(renderer.domElement);
+
+        // adding sphere Geometrics
+        var geometry = new THREE.SphereGeometry(3, 20, 20);
+        // add material to color it
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFA500, wireframe: false });
+        // add mesh - an object that takes a geometry, and applies a material
+        var sphere = new THREE.Mesh(geometry, material);
+        // enables sphere to cast/receive shadows
+        sphere.castShadow = true;
+        // add sphere to the scene
+        scene.add(sphere);
+
+        // adding sphereWire Geometrics
+        var geometry = new THREE.SphereGeometry(4, 20, 20);
+        // add material to color it
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFA500, wireframe: true });
+        // add mesh - an object that takes a geometry, and applies a material
+        var sphereWire = new THREE.Mesh(geometry, material);
+        // enables sphereWire to cast/receive shadows
+        sphereWire.castShadow = true;
+        // add sphere to the scene
+        scene.add(sphereWire);
+
+        // adding cube Geometrics
+        var geometry = new THREE.BoxGeometry(5, 5, 5);
+        // add material to color it		
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFA500, wireframe: false });
+        // add mesh - an object that takes a geometry, and applies a material
+        var cube = new THREE.Mesh(geometry, material);
+        // enables cube to cast/receive shadows
+
+        cube.position.z = -5;
+        // add cube to scene
+        scene.add(cube);
+
+
+
+        // add a light source, colour, position and add it to the scene
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(0, 40, 40);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        // add plane geometery
+        var geometryPlane = new THREE.PlaneGeometry(40, 40, 32);
+        // add material to color it		
+        var material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+        // add mesh - an object that takes a geometry, and applies a material
+        var plane = new THREE.Mesh(geometryPlane, material);
+        // set x, y, z
+        plane.position.set(0, 0, -10);
+        // enables plane to cast/receive shadows
+        plane.receiveShadow = true;
+        // add plane to scene
+        scene.add(plane);
+
+        // camera helper to illustrate source of light
+        var spotLightHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+
+        // repeatme - render loop
+        var repeatme = function () {
+            renderer.render(scene, camera);
+
+            // function calls to rotate Sphere, move sphere, change the colour of the sphere, and apply gravity
+            rotate();
+            moveSphere();
+            changeColour();
+            applyGravity();
+
+            requestAnimationFrame(repeatme);
+        }
+
+        function rotate() {
+            // rotate sphere and sphereWire
+            sphere.rotation.x += 0.01;
+            sphere.rotation.y += 0.01;
+            sphereWire.rotation.x += 0.01;
+            sphereWire.rotation.y += 0.01;
+        }
+
+        // function to move sphere from left to right
+        // and to make the sphere bounce
+        function moveSphere() {
+            sphere.position.x += xVel;
+            sphere.position.z += zVel;
+
+            // variable to help create bouncing sphere
+            zVel -= 0.01;
+
+            // if true - move sphere to the left
+            if (sphere.position.x > 15) {
+                xVel = -xVel;
+            }
+
+            // if true - move sphere to the right
+            if (sphere.position.x < -15) {
+                xVel = -xVel;
+            }
+
+            // if true - move sphere upwards
+            if (sphere.position.y > 15) {
+                yVel = -yVel;
+            }
+
+            // if true - move sphere downwards
+            if (sphere.position.y < -15) {
+                yVel = -yVel;
+            }
+
+            // sphere position z plus half the radius <= plane position z
+            // make the sphere bounce
+            if ((sphere.position.z - 1.5) <= plane.position.z) {
+                zVel = -(zVel * 1);
+            }
+
+            // set the sphereWire to sphere
+            sphereWire.position.x = sphere.position.x;
+            sphereWire.position.z = sphere.position.z;
+        }
+
+        function changeColour() {
+            // hsl string - red, green, blue
+            sphere.material.color.setStyle("hsl(" + newColour + ", 90%, 60%)");
+            newColour = (newColour + 0.2) % 360;
+        }
+
+        function applyGravity() {
+            sphere.position.y -= gravity;
+            gravity -= 0.0001;
+            if (sphere.position.y < -15) {
+                gravity = 0.01;
+                sphere.position.y = -15;
+            }
+        }
+
+        repeatme();
+
+    </script>
+</body>
+
+</html>
