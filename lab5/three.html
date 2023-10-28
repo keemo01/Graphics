@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script type="text/javascript">
+
+        // author Akeem
+
+        // variables
+        var ballSpeedZ;
+        var xVel = 0.2;
+        var zVel = 0.2;
+        var yVel = 0.2;
+        var newColour = 0;
+        var gravity = 0.01;
+
+        // create scene without any parameters
+        var scene = new THREE.Scene();
+        // create camera - field of view, width of element / height, near  clipping plane, far clipping plane
+        var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // tetrahedron, cube, and camera's default coordinates are (0,0,0)
+        // set x, y, z
+        camera.position.set(0, -40, 15);
+        camera.lookAt(0, 0, 0);
+
+        // create renderer instance
+        var renderer = new THREE.WebGLRenderer();
+        // set the size of the area we want to render
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        // add renderer element to the HTML document
+        document.body.appendChild(renderer.domElement);
+
+        // adding tetrahedron Geometrics
+        var geometry = new THREE.TetrahedronGeometry(3);
+        // add material to color it
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFA500, wireframe: false });
+        // add mesh - an object that takes a geometry and applies a material
+        var tetrahedron = new THREE.Mesh(geometry, material);
+        // enables tetrahedron to cast/receive shadows
+        tetrahedron.castShadow = true;
+        // add tetrahedron to the scene
+        scene.add(tetrahedron);
+
+        // adding tetrahedronWire Geometrics
+        var geometry = new THREE.TetrahedronGeometry(4);
+        // add material to color it
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFA500, wireframe: true });
+        // add mesh - an object that takes a geometry and applies a material
+        var tetrahedronWire = new THREE.Mesh(geometry, material);
+        // enables tetrahedronWire to cast/receive shadows
+        tetrahedronWire.castShadow = true;
+        // add tetrahedronWire to the scene
+        scene.add(tetrahedronWire);
+
+        // adding cube Geometrics
+        var geometry = new THREE.BoxGeometry(5, 5, 5);
+        // add material to color it
+        var material = new THREE.MeshLambertMaterial({ color: 0xFFA500, wireframe: false });
+        // add mesh - an object that takes a geometry and applies a material
+        var cube = new THREE.Mesh(geometry, material);
+        // enables cube to cast/receive shadows
+
+        cube.position.z = -5;
+        // add cube to scene
+        scene.add(cube);
+
+        // add a light source, color, position and add it to the scene
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(0, 40, 40);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        // add plane geometry
+        var geometryPlane = new THREE.PlaneGeometry(40, 40, 32);
+        // add material to color it
+        var material = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+        // add mesh - an object that takes a geometry and applies a material
+        var plane = new THREE.Mesh(geometryPlane, material);
+        // set x, y, z
+        plane.position.set(0, 0, -10);
+        // enables plane to cast/receive shadows
+        plane.receiveShadow = true;
+        // add plane to scene
+        scene.add(plane);
+
+        // camera helper to illustrate the source of light
+        var spotLightHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+
+        // repeatme - render loop
+        var repeatme = function () {
+            renderer.render(scene, camera);
+
+            // function calls to rotate tetrahedron, move tetrahedron, change the color of the tetrahedron, and apply gravity
+            rotate();
+            moveTetrahedron();
+            changeColour();
+            applyGravity();
+
+            requestAnimationFrame(repeatme);
+        }
+
+        function rotate() {
+            // rotate tetrahedron and tetrahedronWire
+            tetrahedron.rotation.x += 0.01;
+            tetrahedron.rotation.y += 0.01;
+            tetrahedronWire.rotation.x += 0.01;
+            tetrahedronWire.rotation.y += 0.01;
+        }
+
+        // function to move tetrahedron from left to right
+        // and to make the tetrahedron bounce
+        function moveTetrahedron() {
+            tetrahedron.position.x += xVel;
+            tetrahedron.position.z += zVel;
+
+            // variable to help create bouncing tetrahedron
+            zVel -= 0.01;
+
+            // if true - move tetrahedron to the left
+            if (tetrahedron.position.x > 15) {
+                xVel = -xVel;
+            }
+
+            // if true - move tetrahedron to the right
+            if (tetrahedron.position.x < -15) {
+                xVel = -xVel;
+            }
+
+            // if true - move tetrahedron upwards
+            if (tetrahedron.position.y > 15) {
+                yVel = -yVel;
+            }
+
+            // if true - move tetrahedron downwards
+            if (tetrahedron.position.y < -15) {
+                yVel = -yVel;
+            }
+
+            // tetrahedron position z plus half the radius <= plane position z
+            // make the tetrahedron bounce
+            if ((tetrahedron.position.z - 1.5) <= plane.position.z) {
+                zVel = -(zVel * 1);
+            }
+
+            // set the tetrahedronWire to tetrahedron
+            tetrahedronWire.position.x = tetrahedron.position.x;
+            tetrahedronWire.position.z = tetrahedron.position.z;
+        }
+
+        function changeColour() {
+            // hsl string - red, green, blue
+            tetrahedron.material.color.setStyle("hsl(" + newColour + ", 90%, 60%)");
+            newColour = (newColour + 0.2) % 360;
+        }
+
+        function applyGravity() {
+            tetrahedron.position.y -= gravity;
+            gravity -= 0.0001;
+            if (tetrahedron.position.y < -15) {
+                gravity = 0.01;
+                tetrahedron.position.y = -15;
+            }
+        }
+
+        repeatme();
+
+    </script>
+</body>
+
+</html>
