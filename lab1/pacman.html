@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas Exercise</title>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas"></canvas>
+    <script type="text/javascript">
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        // Exercise 4: Change the size of the canvas
+        canvas.width = 400;
+        canvas.height = 300;
+
+        // Exercise 5: Add your name as text to the canvas
+        ctx.font = "20px Arial";
+        ctx.fillText("AKEEM JOKO", 10, 30);
+
+        // Exercise 6: Change the rectangle color
+        ctx.fillStyle = "blue";
+
+        // Exercise 7: Change the dimensions of the square to make it a rectangle
+        ctx.fillRect(50, 50, 100, 80);
+
+        // Exercise 8: Draw a second rectangle of a different color
+        ctx.fillStyle = "green";
+        ctx.fillRect(200, 100, 120, 60);
+
+        // Exercise 9: Add transparency to the squares
+        ctx.fillStyle = "rgba(255, 0, 0, 0.4)";
+        ctx.fillRect(50, 50, 100, 80);
+        ctx.fillStyle = "rgba(0, 255, 0, 0.4)";
+        ctx.fillRect(200, 100, 120, 60);
+
+        // Exercise 10: Add two circles of different colors
+        ctx.beginPath();
+        ctx.arc(200, 200, 50, 0, 2 * Math.PI);
+        ctx.fillStyle = "purple";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(300, 200, 30, 0, 2 * Math.PI);
+        ctx.fillStyle = "orange";
+        ctx.fill();
+
+        // Exercise 11: Set outline color for the shapes
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(50, 50, 100, 80);
+        ctx.strokeRect(200, 100, 120, 60);
+        ctx.beginPath();
+        ctx.arc(200, 200, 50, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(300, 200, 30, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        // Advanced Exercise 1: Draw Pac-Man
+        ctx.beginPath();
+        var x = 150; // x-coordinate of the center of Pac-Man
+        var y = 250; // y-coordinate of the center of Pac-Man
+        var radius = 50; // radius of Pac-Man
+        var startAngle = (Math.PI / 4); // starting angle of the mouth
+        var endAngle = (7 * Math.PI / 4); // ending angle of the mouth
+        var counterClockwise = false; // draw the arc in a clockwise direction
+        ctx.arc(x, y, radius, startAngle, endAngle, counterClockwise);
+        ctx.lineTo(x, y); // draw a line to the center to close the mouth
+        ctx.closePath();
+        ctx.fillStyle = "yellow";
+        ctx.fill();
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+
+        // Advanced Exercise 2: Move a shape after three seconds
+        setTimeout(function () {
+            // Move the second rectangle 50px to the right
+            ctx.clearRect(200, 100, 120, 60);
+            ctx.fillRect(250, 100, 120, 60);
+        }, 3000);
+    </script>
+</body>
+
+</html>

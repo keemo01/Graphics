@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 1 Exercise</title>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas"></canvas>
+    <script type="text/javascript">
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+
+        // Exercise 4: Change the size of the canvas
+        canvas.width = 400;
+        canvas.height = 300;
+
+        // Exercise 5: Add your name as text to the canvas
+        ctx.font = "20px Arial";
+        ctx.fillText("Your Name", 10, 30);
+
+        // Exercise 6: Change the rectangle color
+        ctx.fillStyle = "blue";
+
+        // Exercise 7: Change the dimensions of the square to make it a rectangle
+        ctx.fillRect(50, 50, 100, 80);
+
+        // Exercise 8: Draw a second rectangle of a different color
+        ctx.fillStyle = "green";
+        ctx.fillRect(200, 100, 120, 60);
+
+        // Exercise 9: Add transparency to the squares
+        ctx.fillStyle = "rgba(255, 0, 0, 0.4)";
+        ctx.fillRect(50, 50, 100, 80);
+        ctx.fillStyle = "rgba(0, 255, 0, 0.4)";
+        ctx.fillRect(200, 100, 120, 60);
+
+        // Exercise 10: Add two circles of different colors
+        ctx.beginPath();
+        ctx.arc(200, 200, 50, 0, 2 * Math.PI);
+        ctx.fillStyle = "purple";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(300, 200, 30, 0, 2 * Math.PI);
+        ctx.fillStyle = "orange";
+        ctx.fill();
+
+        // Exercise 11: Set outline color for the shapes
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(50, 50, 100, 80);
+        ctx.strokeRect(200, 100, 120, 60);
+        ctx.beginPath();
+        ctx.arc(200, 200, 50, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(300, 200, 30, 0, 2 * Math.PI);
+        ctx.stroke();
+
+
+    </script>
+</body>
+
+</html>
