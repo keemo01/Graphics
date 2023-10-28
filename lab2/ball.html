@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
+
+    <style type="text/css">
+        body {
+            background-color: white;
+        }
+
+        canvas {
+            border: 5px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Name -->
+    <h1>AKEEM</h1>
+
+    <canvas id="canvas-for-ball" width="500" height="300"></canvas>
+
+    <script type="text/javascript">
+        // Variables
+        var ball = {
+            x: 50,
+            y: 20,
+            r: 20,
+            ySpeed: 3,
+            xSpeed: 3,
+            turn: Math.PI / 4,
+            direction: false,
+
+            // Rotate the ball
+            rotate: function () {
+                this.turn += 0.12;
+            },
+
+            // Draw the ball on the canvas
+            draw: function () {
+                ctx.lineWidth = this.r / 8;
+
+                // Draw the red half of the ball
+                ctx.fillStyle = "rgb(150,0,0)";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 5 * Math.PI / 6 + this.turn, 11 * Math.PI / 6 + this.turn, this.direction);
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw the white half of the ball
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 11 * Math.PI / 6 + this.turn, 5 * Math.PI / 6 + this.turn, this.direction);
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw the line between the halves
+                ctx.lineTo(this.x + (this.r * Math.cos(11 * Math.PI / 6 + this.turn)), this.y + this.r * Math.sin(11 * Math.PI / 6 + this.turn));
+                ctx.stroke();
+
+                // Draw the center white circle
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r / 3, 0, 2 * Math.PI);
+                ctx.fillStyle = "white";
+                ctx.fill();
+                ctx.stroke();
+                ctx.closePath();
+            },
+
+            // Move the ball and handle collision with walls
+            move: function () {
+                if (this.y > canvas.height - this.r || this.y < this.r) {
+                    this.ySpeed *= -1;
+                    this.direction = !this.direction;
+                }
+
+                if (this.x > canvas.width - this.r || this.x < this.r) {
+                    this.xSpeed *= -1;
+                    this.direction = !this.direction;
+                }
+
+                this.y += this.ySpeed;
+                this.x += this.xSpeed;
+            }
+        };
+
+        // Get the canvas element and its context
+        var canvas = document.getElementById("canvas-for-ball");
+        var ctx = canvas.getContext("2d");
+
+        // Function to animate the ball movement
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ball.draw();
+            ball.move();
+            ball.rotate();
+            requestAnimationFrame(animate);
+        }
+
+        // Start the animation
+        animate();
+    </script>
+</body>
+
+</html>
